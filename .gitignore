@@ -1,0 +1,14 @@
+﻿.local/
+_private/
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+*ssl-bundle*
+*secret*
+credentials.json
+id_rsa*
+id_ed25519*

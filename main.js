@@ -44,6 +44,14 @@
     });
   };
 
+  const applyAriaLabels = (isEn) => {
+    document.querySelectorAll("[data-ar-aria-label]").forEach((el) => {
+      const ar = el.getAttribute("data-ar-aria-label");
+      const en = el.getAttribute("data-en-aria-label");
+      if (ar != null && en != null) el.setAttribute("aria-label", isEn ? en : ar);
+    });
+  };
+
   const setLang = (lang) => {
     const isEn = lang === "en";
     root.lang = isEn ? "en" : "ar";
@@ -60,6 +68,7 @@
       if (ar != null && en != null) el.innerHTML = isEn ? en : ar;
     });
     applyPlaceholders(isEn);
+    applyAriaLabels(isEn);
     if (toggle) {
       toggle.setAttribute("aria-pressed", isEn ? "true" : "false");
       toggle.textContent = isEn ? "AR" : "EN";
@@ -115,26 +124,86 @@
     );
   }
 
+  const digitsOnly = (value) => String(value || "").replace(/\D/g, "");
+
   const readContactFields = () => {
     const isEn = root.dataset.lang === "en";
     const name = (contactForm?.querySelector("#msg-name")?.value || "").trim();
     const email = (contactForm?.querySelector("#msg-email")?.value || "").trim();
+    const phoneCc = (
+      contactForm?.querySelector("#msg-phone-cc")?.value || "+966"
+    ).trim();
+    const phoneLocalRaw = (
+      contactForm?.querySelector("#msg-phone")?.value || ""
+    ).trim();
+    const phoneLocal = digitsOnly(phoneLocalRaw).replace(/^0+/, "");
+    const phone = phoneLocal ? `${phoneCc}${phoneLocal}` : "";
     const typed = (contactForm?.querySelector("#msg-body")?.value || "").trim();
     const botcheck = (
       contactForm?.querySelector("#msg-botcheck")?.value || ""
     ).trim();
     const greeting = isEn ? DEFAULT_GREETING_EN : DEFAULT_GREETING_AR;
     const message = typed || greeting;
-    return { isEn, name, email, typed, message, botcheck };
+    return {
+      isEn,
+      name,
+      email,
+      phone,
+      phoneCc,
+      phoneLocal,
+      typed,
+      message,
+      botcheck,
+    };
   };
 
-  const buildWhatsAppUrl = ({ isEn, name, email, message }) => {
+  const buildWhatsAppUrl = ({ isEn, name, email, phone, message }) => {
     const parts = [];
     if (name) parts.push(isEn ? `Name: ${name}` : `الاسم: ${name}`);
+    if (phone) parts.push(isEn ? `Phone: ${phone}` : `الجوال: ${phone}`);
     if (email) parts.push(isEn ? `Email: ${email}` : `البريد: ${email}`);
     if (parts.length) parts.push("");
     parts.push(message);
     return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(parts.join("\n"))}`;
+  };
+
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email || "").trim());
+
+  const requireEmail = (email) => {
+    const emailInput = contactForm?.querySelector("#msg-email");
+    const isEn = root.dataset.lang === "en";
+    if (email && isValidEmail(email)) {
+      emailInput?.setCustomValidity("");
+      return true;
+    }
+    emailInput?.setCustomValidity(
+      !email
+        ? isEn
+          ? "Please enter your email."
+          : "يرجى إدخال بريدك الإلكتروني."
+        : isEn
+          ? "Please enter a valid email address."
+          : "يرجى إدخال بريد إلكتروني صحيح."
+    );
+    emailInput?.reportValidity();
+    return false;
+  };
+
+  const requirePhone = (phoneLocal) => {
+    const phoneInput = contactForm?.querySelector("#msg-phone");
+    const isEn = root.dataset.lang === "en";
+    if (phoneLocal && phoneLocal.length >= 7 && phoneLocal.length <= 15) {
+      phoneInput?.setCustomValidity("");
+      return true;
+    }
+    phoneInput?.setCustomValidity(
+      isEn
+        ? "Please enter a valid phone number."
+        : "يرجى إدخال رقم جوال صحيح."
+    );
+    phoneInput?.reportValidity();
+    return false;
   };
 
   const requireMessage = (typed) => {
@@ -192,41 +261,37 @@
   const keyIsConfigured = (key) =>
     Boolean(key) && key !== PLACEHOLDER_KEY && !key.includes("YOUR_WEB3FORMS");
 
-  const buildWeb3FormsPayload = ({ isEn, name, email, message, botcheck }) => {
+  const buildWeb3FormsPayload = ({
+    isEn,
+    name,
+    email,
+    phone,
+    message,
+    botcheck,
+  }) => {
     const subject = isEn
       ? "Sourcing inquiry — Al Aseel"
       : "استفسار توريد — الأصيل";
     const fromName = name || (isEn ? "Website visitor" : "زائر الموقع");
     const lines = [];
     lines.push(isEn ? `Name: ${fromName}` : `الاسم: ${fromName}`);
-    lines.push(
-      email
-        ? isEn
-          ? `Reply-to: ${email}`
-          : `للرد على: ${email}`
-        : isEn
-          ? "Reply-to: (not provided)"
-          : "للرد على: (غير متوفر)"
-    );
+    lines.push(isEn ? `Phone: ${phone}` : `الجوال: ${phone}`);
+    lines.push(isEn ? `Reply-to: ${email}` : `للرد على: ${email}`);
     lines.push("");
     lines.push(message);
 
-    const payload = {
+    return {
       access_key: accessKey(),
       subject,
       from_name: fromName,
       name: fromName,
+      email,
+      replyto: email,
+      phone,
       message: lines.join("\n"),
       botcheck: botcheck || "",
       to: contactEmail(),
     };
-
-    if (email) {
-      payload.email = email;
-      payload.replyto = email;
-    }
-
-    return payload;
   };
 
   const submitViaWeb3Forms = async (fields) => {
@@ -279,6 +344,8 @@
   contactForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const fields = readContactFields();
+    if (!requireEmail(fields.email)) return;
+    if (!requirePhone(fields.phoneLocal)) return;
     if (!requireMessage(fields.typed)) return;
 
     setEmailBusy(true);
@@ -325,15 +392,34 @@
     ?.querySelector('[data-send="whatsapp"]')
     ?.addEventListener("click", () => {
       const fields = readContactFields();
+      if (!requireEmail(fields.email)) return;
+      if (!requirePhone(fields.phoneLocal)) return;
       if (!requireMessage(fields.typed)) return;
       window.open(buildWhatsAppUrl(fields), "_blank", "noopener,noreferrer");
     });
 
-  contactForm?.querySelector("#msg-body")?.addEventListener("input", (event) => {
-    event.currentTarget.setCustomValidity("");
+  const clearFieldErrorState = (input) => {
+    input?.setCustomValidity("");
     if (formStatus && !formStatus.hidden && formStatus.dataset.state === "error") {
       clearFormStatus();
     }
+  };
+
+  contactForm?.querySelector("#msg-email")?.addEventListener("input", (event) => {
+    clearFieldErrorState(event.currentTarget);
+  });
+
+  contactForm?.querySelector("#msg-phone")?.addEventListener("input", (event) => {
+    clearFieldErrorState(event.currentTarget);
+  });
+  contactForm
+    ?.querySelector("#msg-phone-cc")
+    ?.addEventListener("change", () => {
+      clearFieldErrorState(contactForm?.querySelector("#msg-phone"));
+    });
+
+  contactForm?.querySelector("#msg-body")?.addEventListener("input", (event) => {
+    clearFieldErrorState(event.currentTarget);
   });
 
 })();

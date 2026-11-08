@@ -817,6 +817,7 @@ html[data-lang="en"] .section .mp-offer .mp-note {
 }
 
 .message-form input,
+.message-form select,
 .message-form textarea {
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -828,7 +829,26 @@ html[data-lang="en"] .section .mp-offer .mp-note {
   resize: vertical;
 }
 
+.message-form .phone-input {
+  display: grid;
+  grid-template-columns: minmax(8.5rem, 0.95fr) minmax(0, 1.35fr);
+  gap: 0.55rem;
+  align-items: stretch;
+}
+
+.message-form .phone-input select,
+.message-form .phone-input input {
+  min-width: 0;
+  unicode-bidi: isolate;
+}
+
+.message-form .phone-input select {
+  cursor: pointer;
+  padding-inline: 0.65rem;
+}
+
 .message-form input:focus-visible,
+.message-form select:focus-visible,
 .message-form textarea:focus-visible {
   outline: 3px solid var(--red);
   outline-offset: 2px;
@@ -1382,10 +1402,16 @@ html[data-lang="en"] .section .mp-offer .mp-note {
   }
 
   .message-form input,
+  .message-form select,
   .message-form textarea,
   .message-form .btn-primary,
   .message-form .btn-wa {
     min-height: 48px;
+  }
+
+  .message-form .phone-input {
+    grid-template-columns: minmax(7.75rem, 0.9fr) minmax(0, 1.4fr);
+    gap: 0.45rem;
   }
 
   .form-actions {

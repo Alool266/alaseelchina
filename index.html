@@ -585,8 +585,8 @@
               />
             </div>
             <div class="field">
-              <label for="msg-email" data-ar="بريدك للرد (اختياري)" data-en="Your email for reply (optional)"
-                >بريدك للرد (اختياري)</label
+              <label for="msg-email" data-ar="بريدك للرد (مطلوب)" data-en="Your email for reply (required)"
+                >بريدك للرد (مطلوب)</label
               >
               <input
                 id="msg-email"
@@ -594,11 +594,89 @@
                 type="email"
                 autocomplete="email"
                 maxlength="120"
+                required
                 dir="ltr"
                 data-ar-placeholder="name@example.com"
                 data-en-placeholder="name@example.com"
                 placeholder="name@example.com"
               />
+            </div>
+            <div class="field">
+              <label for="msg-phone" data-ar="الجوال (مطلوب)" data-en="Phone (required)">الجوال (مطلوب)</label>
+              <div class="phone-input" dir="ltr">
+                <select
+                  id="msg-phone-cc"
+                  name="phone_cc"
+                  required
+                  aria-label="Country code"
+                  data-ar-aria-label="رمز الدولة"
+                  data-en-aria-label="Country code"
+                >
+                  <option value="+966" selected data-ar="السعودية (+966)" data-en="Saudi (+966)">
+                    السعودية (+966)
+                  </option>
+                  <option value="+971" data-ar="الإمارات (+971)" data-en="UAE (+971)">
+                    الإمارات (+971)
+                  </option>
+                  <option value="+973" data-ar="البحرين (+973)" data-en="Bahrain (+973)">
+                    البحرين (+973)
+                  </option>
+                  <option value="+974" data-ar="قطر (+974)" data-en="Qatar (+974)">
+                    قطر (+974)
+                  </option>
+                  <option value="+965" data-ar="الكويت (+965)" data-en="Kuwait (+965)">
+                    الكويت (+965)
+                  </option>
+                  <option value="+968" data-ar="عُمان (+968)" data-en="Oman (+968)">
+                    عُمان (+968)
+                  </option>
+                  <option value="+967" data-ar="اليمن (+967)" data-en="Yemen (+967)">
+                    اليمن (+967)
+                  </option>
+                  <option value="+86" data-ar="الصين (+86)" data-en="China (+86)">
+                    الصين (+86)
+                  </option>
+                  <option value="+20" data-ar="مصر (+20)" data-en="Egypt (+20)">
+                    مصر (+20)
+                  </option>
+                  <option value="+962" data-ar="الأردن (+962)" data-en="Jordan (+962)">
+                    الأردن (+962)
+                  </option>
+                  <option value="+961" data-ar="لبنان (+961)" data-en="Lebanon (+961)">
+                    لبنان (+961)
+                  </option>
+                  <option value="+964" data-ar="العراق (+964)" data-en="Iraq (+964)">
+                    العراق (+964)
+                  </option>
+                  <option value="+963" data-ar="سوريا (+963)" data-en="Syria (+963)">
+                    سوريا (+963)
+                  </option>
+                  <option value="+90" data-ar="تركيا (+90)" data-en="Turkey (+90)">
+                    تركيا (+90)
+                  </option>
+                  <option value="+91" data-ar="الهند (+91)" data-en="India (+91)">
+                    الهند (+91)
+                  </option>
+                  <option value="+1" data-ar="أمريكا/كندا (+1)" data-en="US/Canada (+1)">
+                    أمريكا/كندا (+1)
+                  </option>
+                  <option value="+44" data-ar="بريطانيا (+44)" data-en="UK (+44)">
+                    بريطانيا (+44)
+                  </option>
+                </select>
+                <input
+                  id="msg-phone"
+                  name="phone"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel-national"
+                  maxlength="20"
+                  required
+                  data-ar-placeholder="5xxxxxxxx"
+                  data-en-placeholder="5xxxxxxxx"
+                  placeholder="5xxxxxxxx"
+                />
+              </div>
             </div>
             <div class="field">
               <label for="msg-body" data-ar="رسالتك" data-en="Your message">رسالتك</label>

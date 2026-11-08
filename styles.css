@@ -557,12 +557,23 @@ a:hover {
   max-width: 32rem;
   padding: 1.45rem 1.35rem;
   background: linear-gradient(160deg, var(--navy-deep), var(--navy) 55%, var(--navy-soft));
-  color: var(--white);
+  color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 22px 48px rgba(11, 42, 91, 0.22);
 }
 
-.mp-door {
+/* Beat .section p { color: var(--muted) } so AR/EN stay readable on navy */
+.mp-offer p,
+.section .mp-offer p,
+.mp-offer [data-ar],
+.mp-offer [data-en],
+html[data-lang="ar"] .mp-offer p,
+html[data-lang="en"] .mp-offer p {
+  color: #ffffff;
+}
+
+.mp-offer .mp-door,
+.section .mp-offer .mp-door {
   margin: 0;
   font-size: clamp(1.2rem, 3vw, 1.45rem);
   font-weight: 800;
@@ -570,11 +581,12 @@ a:hover {
   letter-spacing: 0.01em;
 }
 
-.mp-note {
+.mp-offer .mp-note,
+.section .mp-offer .mp-note {
   margin: 0;
   font-size: 0.92rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.92);
   max-width: 26rem;
 }
 

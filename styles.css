@@ -557,36 +557,48 @@ a:hover {
   max-width: 32rem;
   padding: 1.45rem 1.35rem;
   background: linear-gradient(160deg, var(--navy-deep), var(--navy) 55%, var(--navy-soft));
-  color: #ffffff;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   border-radius: 20px;
   box-shadow: 0 22px 48px rgba(11, 42, 91, 0.22);
 }
 
-/* Beat .section p { color: var(--muted) } so AR/EN stay readable on navy */
-.mp-offer p,
+/* Force white over .section p { color: var(--muted) } and any lang/attr rules */
+.mp-offer,
+.mp-offer *,
+.section .mp-offer,
+.section .mp-offer *,
 .section .mp-offer p,
+html[data-lang="ar"] .section .mp-offer p,
+html[data-lang="en"] .section .mp-offer p,
 .mp-offer [data-ar],
-.mp-offer [data-en],
-html[data-lang="ar"] .mp-offer p,
-html[data-lang="en"] .mp-offer p {
-  color: #ffffff;
+.mp-offer [data-en] {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
 }
 
 .mp-offer .mp-door,
-.section .mp-offer .mp-door {
+.section .mp-offer .mp-door,
+html[data-lang="ar"] .section .mp-offer .mp-door,
+html[data-lang="en"] .section .mp-offer .mp-door {
   margin: 0;
   font-size: clamp(1.2rem, 3vw, 1.45rem);
   font-weight: 800;
-  color: #ffffff;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   letter-spacing: 0.01em;
 }
 
 .mp-offer .mp-note,
-.section .mp-offer .mp-note {
+.section .mp-offer .mp-note,
+html[data-lang="ar"] .section .mp-offer .mp-note,
+html[data-lang="en"] .section .mp-offer .mp-note {
   margin: 0;
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  opacity: 1 !important;
   max-width: 26rem;
 }
 

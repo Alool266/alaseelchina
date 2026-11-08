@@ -797,6 +797,7 @@ html[data-lang="en"] .section .mp-offer .mp-note {
 }
 
 .message-form {
+  position: relative;
   width: min(100%, 28rem);
   display: grid;
   gap: 0.95rem;
@@ -846,6 +847,50 @@ html[data-lang="en"] .section .mp-offer .mp-note {
 .message-form .btn-wa {
   width: 100%;
   border: none;
+}
+
+.message-form .btn-primary:disabled {
+  opacity: 0.72;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-status {
+  margin: 0.15rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.form-status.is-pending {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.form-status.is-success {
+  background: rgba(34, 150, 94, 0.22);
+  color: #d8ffe8;
+  border: 1px solid rgba(120, 230, 170, 0.45);
+}
+
+.form-status.is-error {
+  background: rgba(255, 214, 102, 0.16);
+  color: #ffe9a8;
+  border: 1px solid rgba(255, 214, 102, 0.4);
 }
 
 .contact-panel .btn-primary {

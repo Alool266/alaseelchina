@@ -613,6 +613,16 @@
                 placeholder="صف البضاعة والكمية والوجهة…"
               ></textarea>
             </div>
+            <div class="hp-field" aria-hidden="true">
+              <label for="msg-botcheck">Website</label>
+              <input
+                id="msg-botcheck"
+                name="botcheck"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
             <div class="form-actions">
               <button
                 class="btn btn-primary btn-lg"
@@ -633,6 +643,13 @@
                 <span data-ar="واتساب" data-en="WhatsApp">واتساب</span>
               </button>
             </div>
+            <p
+              class="form-status"
+              data-form-status
+              role="status"
+              aria-live="polite"
+              hidden
+            ></p>
           </form>
 
           <p class="contact-alt">
@@ -765,6 +782,7 @@
       </svg>
     </a>
 
+    <script src="js/config.js"></script>
     <script src="main.js" defer></script>
   </body>
 </html>

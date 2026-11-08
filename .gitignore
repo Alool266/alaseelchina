@@ -7,6 +7,7 @@ _private/
 .env
 .env.*
 !.env.example
+js/config.local.js
 *ssl-bundle*
 *secret*
 credentials.json

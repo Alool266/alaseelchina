@@ -618,9 +618,9 @@ a:hover {
 
 .mp-platforms {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  max-width: 720px;
+  max-width: 960px;
   margin: 0 auto 1.75rem;
 }
 
@@ -632,7 +632,7 @@ a:hover {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.35rem 1.25rem;
+  padding: 1.25rem 1.15rem;
   box-shadow: var(--shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   color: var(--navy);
@@ -645,8 +645,19 @@ a:hover {
   color: var(--navy);
 }
 
+.mp-platform-icon {
+  display: inline-flex;
+  margin-bottom: 0.35rem;
+}
+
+.mp-platform-icon svg {
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
 .mp-platform-name {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   color: var(--navy);
@@ -1112,6 +1123,10 @@ a:hover {
   }
 
   .mp-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .mp-platforms {
     grid-template-columns: 1fr;
   }
 

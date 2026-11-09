@@ -606,19 +606,27 @@ a:hover {
   line-height: 1.5;
 }
 
-.mp-custom-note {
-  /* Align with .mp-flow; soft navy accent — no red hairline fighting the CTA */
-  margin: 0 auto 2rem;
+.mp-cta-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.85rem;
   width: min(100%, 960px);
-  max-width: 960px;
+  margin: 0.15rem auto 0;
+}
+
+.mp-custom-note {
+  /* Soft navy accent — no red hairline competing with the CTA */
+  margin: 0;
+  width: 100%;
   text-align: center;
   color: var(--navy);
   font-weight: 700;
   font-size: clamp(0.95rem, 2.4vw, 1.02rem);
   line-height: 1.75;
-  padding: 1.2rem 1.6rem;
+  padding: 1.25rem 1.6rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(11, 42, 91, 0.035));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(11, 42, 91, 0.04));
   border: 1px solid rgba(11, 42, 91, 0.1);
   border-inline-start: 3px solid var(--navy-soft);
   border-radius: var(--radius);
@@ -631,17 +639,17 @@ a:hover {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 0.25rem;
-  padding-top: 0.15rem;
+  margin: 0;
+  width: 100%;
 }
 
 .mp-actions .btn {
   min-width: min(100%, 16rem);
-  box-shadow: 0 10px 24px rgba(11, 42, 91, 0.14);
+  box-shadow: 0 8px 20px rgba(11, 42, 91, 0.12);
 }
 
 .mp-actions .btn-primary:hover {
-  box-shadow: 0 14px 28px rgba(11, 42, 91, 0.18);
+  box-shadow: 0 12px 26px rgba(11, 42, 91, 0.16);
 }
 
 .steps {
@@ -1454,12 +1462,15 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .mp-cta-block {
+    width: 100%;
+    gap: 1.55rem;
+  }
+
   .mp-custom-note {
     width: 100%;
-    max-width: none;
     text-align: center;
-    padding: 1.1rem 1.15rem;
-    margin: 0 auto 1.75rem;
+    padding: 1.15rem 1.15rem;
   }
 
   .mp-actions {

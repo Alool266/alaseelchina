@@ -550,13 +550,19 @@ a:hover {
 
 .mp-flow {
   list-style: none;
-  margin: 0 auto 1.15rem;
+  /* Explicit width + margin-inline so the 3-card row centers in RTL/LTR */
+  width: min(100%, 960px);
+  max-width: 960px;
+  margin-block: 0 1.15rem;
+  margin-inline: auto;
   padding: 0;
+  padding-inline: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.85rem;
-  max-width: 960px;
   align-items: stretch;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .mp-flow li {
@@ -607,18 +613,24 @@ a:hover {
 }
 
 .mp-cta-block {
+  /* Same width/centering axis as .mp-flow */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.85rem;
   width: min(100%, 960px);
-  margin: 0.15rem auto 0;
+  max-width: 960px;
+  margin-block: 0.15rem 0;
+  margin-inline: auto;
+  box-sizing: border-box;
 }
 
 .mp-custom-note {
-  /* Soft navy accent — no red hairline competing with the CTA */
+  /* Equal borders — no side accent that shifts visual weight off-center */
   margin: 0;
+  margin-inline: auto;
   width: 100%;
+  max-width: 100%;
   text-align: center;
   color: var(--navy);
   font-weight: 700;
@@ -628,7 +640,6 @@ a:hover {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(11, 42, 91, 0.04));
   border: 1px solid rgba(11, 42, 91, 0.1);
-  border-inline-start: 3px solid var(--navy-soft);
   border-radius: var(--radius);
   box-shadow: 0 8px 22px rgba(11, 42, 91, 0.04);
   box-sizing: border-box;
@@ -1506,8 +1517,14 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .mp-flow,
   .mp-cta-block {
     width: 100%;
+    max-width: none;
+    margin-inline: auto;
+  }
+
+  .mp-cta-block {
     gap: 1.55rem;
   }
 

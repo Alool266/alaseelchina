@@ -13,12 +13,21 @@
   const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
   const PLACEHOLDER_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
   const SUBMIT_THROTTLE_MS = 8000;
+  const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
+  const IMAGE_MAX_EDGE = 1280;
+  const IMAGE_UPLOAD_ENDPOINT = "https://tmpfiles.org/api/v1/upload";
+  const IMAGE_UPLOAD_EXPIRE_SEC = 172800; // 48h max on tmpfiles
   const DEFAULT_GREETING_AR =
     "مرحبا، أريد الاستفسار عن خدمة التوريد من الصين عبر الأصيل";
   const DEFAULT_GREETING_EN =
     "Hello, I’d like to inquire about China sourcing via Al Aseel";
 
   let lastEmailSubmitAt = 0;
+  let photoPreviewObjectUrl = "";
+  const attachmentInput = contactForm?.querySelector("[data-product-image]");
+  const photoPreview = contactForm?.querySelector("[data-photo-preview]");
+  const photoPreviewImg = contactForm?.querySelector("[data-photo-preview-img]");
+  const photoPreviewClear = contactForm?.querySelector("[data-photo-preview-clear]");
 
   const siteConfig = () => window.ALASEEL_SITE_CONFIG || {};
   const contactEmail = () =>
@@ -220,6 +229,148 @@
     return false;
   };
 
+  const readOptionalAttachment = () => {
+    const file = attachmentInput?.files?.[0] || null;
+    if (!file) {
+      attachmentInput?.setCustomValidity("");
+      return { ok: true, file: null };
+    }
+
+    const isEn = root.dataset.lang === "en";
+    const isImage =
+      typeof file.type === "string" && file.type.startsWith("image/");
+    if (!isImage) {
+      attachmentInput?.setCustomValidity(
+        isEn
+          ? "Please choose an image file."
+          : "يرجى اختيار ملف صورة."
+      );
+      attachmentInput?.reportValidity();
+      return { ok: false, file: null };
+    }
+
+    if (file.size > MAX_ATTACHMENT_BYTES) {
+      attachmentInput?.setCustomValidity(
+        isEn
+          ? "Image must be 5 MB or smaller."
+          : "يجب ألا يتجاوز حجم الصورة 5 ميغابايت."
+      );
+      attachmentInput?.reportValidity();
+      return { ok: false, file: null };
+    }
+
+    attachmentInput?.setCustomValidity("");
+    return { ok: true, file };
+  };
+
+  const loadImageElement = (file) =>
+    new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("image_load_failed"));
+      };
+      img.src = url;
+    });
+
+  const clearPhotoPreview = () => {
+    if (photoPreviewObjectUrl) {
+      URL.revokeObjectURL(photoPreviewObjectUrl);
+      photoPreviewObjectUrl = "";
+    }
+    if (photoPreviewImg) {
+      photoPreviewImg.removeAttribute("src");
+      photoPreviewImg.alt = "";
+    }
+    if (photoPreview) photoPreview.hidden = true;
+  };
+
+  const showPhotoPreview = (file) => {
+    clearPhotoPreview();
+    if (!file || !photoPreview || !photoPreviewImg) return;
+    photoPreviewObjectUrl = URL.createObjectURL(file);
+    photoPreviewImg.src = photoPreviewObjectUrl;
+    photoPreviewImg.alt =
+      root.dataset.lang === "en" ? "Selected product photo" : "صورة المنتج المختارة";
+    photoPreview.hidden = false;
+  };
+
+  // Web3Forms native attachments require PRO. Compress then host a viewable HTTPS link.
+  const compressImageToJpegBlob = async (file) => {
+    const img = await loadImageElement(file);
+    const scale = Math.min(
+      1,
+      IMAGE_MAX_EDGE / Math.max(img.naturalWidth || 1, img.naturalHeight || 1)
+    );
+    const width = Math.max(1, Math.round((img.naturalWidth || 1) * scale));
+    const height = Math.max(1, Math.round((img.naturalHeight || 1) * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      const err = new Error("image_compress_failed");
+      err.code = "image_compress_failed";
+      throw err;
+    }
+    ctx.drawImage(img, 0, 0, width, height);
+
+    const qualities = [0.78, 0.68, 0.58, 0.48];
+    let blob = null;
+    for (const quality of qualities) {
+      blob = await new Promise((resolve) => {
+        canvas.toBlob((result) => resolve(result), "image/jpeg", quality);
+      });
+      if (blob && blob.size <= 1.4 * 1024 * 1024) break;
+    }
+
+    if (!blob) {
+      const err = new Error("image_compress_failed");
+      err.code = "image_compress_failed";
+      throw err;
+    }
+
+    return blob;
+  };
+
+  const uploadProductImage = async (blob, originalName) => {
+    const safeName = String(originalName || "product")
+      .replace(/\.[^.]+$/, "")
+      .replace(/[^\w\-ء-ي]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+    const fileName = `${safeName || "product"}.jpg`;
+    const formData = new FormData();
+    formData.append("file", blob, fileName);
+    formData.append("expire", String(IMAGE_UPLOAD_EXPIRE_SEC));
+
+    const response = await fetch(IMAGE_UPLOAD_ENDPOINT, {
+      method: "POST",
+      body: formData,
+    });
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+    const pageUrl = String(data?.data?.url || "").trim();
+    if (!response.ok || data?.status !== "success" || !pageUrl.startsWith("http")) {
+      const err = new Error(data?.message || "image_upload_failed");
+      err.code = "image_upload_failed";
+      throw err;
+    }
+
+    return pageUrl;
+  };
+
   const setFormStatus = (type, arText, enText) => {
     if (!formStatus) return;
     const isEn = root.dataset.lang === "en";
@@ -268,10 +419,17 @@
     phone,
     message,
     botcheck,
+    imageUrl,
+    imageFileName,
   }) => {
-    const subject = isEn
-      ? "Sourcing inquiry — Al Aseel"
-      : "استفسار توريد — الأصيل";
+    const hasImage = Boolean(imageUrl);
+    const subject = hasImage
+      ? isEn
+        ? "Sourcing inquiry + photo — Al Aseel"
+        : "استفسار توريد مع صورة — الأصيل"
+      : isEn
+        ? "Sourcing inquiry — Al Aseel"
+        : "استفسار توريد — الأصيل";
     const fromName = name || (isEn ? "Website visitor" : "زائر الموقع");
     const lines = [];
     lines.push(isEn ? `Name: ${fromName}` : `الاسم: ${fromName}`);
@@ -280,7 +438,18 @@
     lines.push("");
     lines.push(message);
 
-    return {
+    if (hasImage) {
+      lines.push("");
+      lines.push("---");
+      lines.push(
+        isEn
+          ? `Product photo (open to view/download; link available up to 48 hours${imageFileName ? `; original: ${imageFileName}` : ""}):`
+          : `صورة المنتج (افتح للعرض/التحميل؛ الرابط متاح حتى 48 ساعة${imageFileName ? `؛ الملف الأصلي: ${imageFileName}` : ""}):`
+      );
+      lines.push(imageUrl);
+    }
+
+    const payload = {
       access_key: accessKey(),
       subject,
       from_name: fromName,
@@ -292,9 +461,16 @@
       botcheck: botcheck || "",
       to: contactEmail(),
     };
+
+    if (hasImage) {
+      payload.product_photo_url = imageUrl;
+      if (imageFileName) payload.product_image_filename = imageFileName;
+    }
+
+    return payload;
   };
 
-  const submitViaWeb3Forms = async (fields) => {
+  const submitViaWeb3Forms = async (fields, imageOptions = null) => {
     await localConfigReady;
     const key = accessKey();
     if (!keyIsConfigured(key)) {
@@ -315,13 +491,20 @@
       return { success: true, skipped: true };
     }
 
+    const payload = buildWeb3FormsPayload({
+      ...fields,
+      imageUrl: imageOptions?.url || null,
+      imageFileName: imageOptions?.fileName || null,
+    });
+    const formData = new FormData();
+    Object.entries(payload).forEach(([keyName, value]) => {
+      formData.append(keyName, value == null ? "" : String(value));
+    });
+
+    // Do not set Content-Type: browser must add multipart boundary for FormData.
     const response = await fetch(WEB3FORMS_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(buildWeb3FormsPayload(fields)),
+      body: formData,
     });
 
     let data = null;
@@ -334,6 +517,7 @@
     if (!response.ok || !data?.success) {
       const err = new Error(data?.message || "submit_failed");
       err.code = "submit_failed";
+      err.apiMessage = data?.message || "";
       throw err;
     }
 
@@ -347,22 +531,43 @@
     if (!requireEmail(fields.email)) return;
     if (!requirePhone(fields.phoneLocal)) return;
     if (!requireMessage(fields.typed)) return;
+    const attachment = readOptionalAttachment();
+    if (!attachment.ok) return;
 
     setEmailBusy(true);
     setFormStatus(
       "pending",
-      "جاري إرسال رسالتك…",
-      "Sending your message…"
+      attachment.file
+        ? "جاري رفع الصورة وإرسال رسالتك…"
+        : "جاري إرسال رسالتك…",
+      attachment.file
+        ? "Uploading photo and sending your message…"
+        : "Sending your message…"
     );
 
     try {
-      await submitViaWeb3Forms(fields);
+      let imageOptions = null;
+      if (attachment.file) {
+        const blob = await compressImageToJpegBlob(attachment.file);
+        const imageUrl = await uploadProductImage(
+          blob,
+          attachment.file.name || "product.jpg"
+        );
+        imageOptions = {
+          url: imageUrl,
+          fileName: attachment.file.name || "product.jpg",
+        };
+      }
+
+      await submitViaWeb3Forms(fields, imageOptions);
+
       setFormStatus(
         "success",
         "تم الإرسال بنجاح — سنرد قريباً على استفسارك.",
         "Sent successfully — we will reply soon."
       );
       contactForm.reset();
+      clearPhotoPreview();
     } catch (error) {
       if (error?.code === "missing_key") {
         setFormStatus(
@@ -375,6 +580,17 @@
           "error",
           "يرجى الانتظار قليلاً قبل إعادة الإرسال.",
           "Please wait a moment before sending again."
+        );
+      } else if (
+        error?.code === "image_too_large" ||
+        error?.code === "image_compress_failed" ||
+        error?.code === "image_upload_failed" ||
+        error?.message === "image_load_failed"
+      ) {
+        setFormStatus(
+          "error",
+          "تعذّر رفع الصورة. جرّب صورة أصغر أو أعد الإرسال بدون صورة.",
+          "Could not upload the photo. Try a smaller image, or send without a photo."
         );
       } else {
         setFormStatus(
@@ -420,6 +636,27 @@
 
   contactForm?.querySelector("#msg-body")?.addEventListener("input", (event) => {
     clearFieldErrorState(event.currentTarget);
+  });
+
+  attachmentInput?.addEventListener("change", (event) => {
+    clearFieldErrorState(event.currentTarget);
+    const file = event.currentTarget?.files?.[0] || null;
+    if (!file) {
+      clearPhotoPreview();
+      return;
+    }
+    const checked = readOptionalAttachment();
+    if (!checked.ok) {
+      clearPhotoPreview();
+      return;
+    }
+    showPhotoPreview(file);
+  });
+
+  photoPreviewClear?.addEventListener("click", () => {
+    if (attachmentInput) attachmentInput.value = "";
+    clearPhotoPreview();
+    clearFieldErrorState(attachmentInput);
   });
 
 })();

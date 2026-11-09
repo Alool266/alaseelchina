@@ -548,82 +548,26 @@ a:hover {
     linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 40%, rgba(255, 255, 255, 0.5));
 }
 
-.mp-offer {
-  display: grid;
-  justify-items: center;
-  gap: 0.55rem;
-  text-align: center;
-  margin: 0 auto 2rem;
-  max-width: 32rem;
-  padding: 1.45rem 1.35rem;
-  background: linear-gradient(160deg, var(--navy-deep), var(--navy) 55%, var(--navy-soft));
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border-radius: 20px;
-  box-shadow: 0 22px 48px rgba(11, 42, 91, 0.22);
-}
-
-/* Force white over .section p { color: var(--muted) } and any lang/attr rules */
-.mp-offer,
-.mp-offer *,
-.section .mp-offer,
-.section .mp-offer *,
-.section .mp-offer p,
-html[data-lang="ar"] .section .mp-offer p,
-html[data-lang="en"] .section .mp-offer p,
-.mp-offer [data-ar],
-.mp-offer [data-en] {
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-}
-
-.mp-offer .mp-door,
-.section .mp-offer .mp-door,
-html[data-lang="ar"] .section .mp-offer .mp-door,
-html[data-lang="en"] .section .mp-offer .mp-door {
-  margin: 0;
-  font-size: clamp(1.2rem, 3vw, 1.45rem);
-  font-weight: 800;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  letter-spacing: 0.01em;
-}
-
-.mp-offer .mp-note,
-.section .mp-offer .mp-note,
-html[data-lang="ar"] .section .mp-offer .mp-note,
-html[data-lang="en"] .section .mp-offer .mp-note {
-  margin: 0;
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  opacity: 1 !important;
-  max-width: 26rem;
-}
-
 .mp-flow {
   list-style: none;
-  margin: 0 auto 1.75rem;
+  margin: 0 auto 1.5rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.85rem;
-  max-width: 900px;
+  max-width: 960px;
 }
 
 .mp-flow li {
   display: flex;
   align-items: flex-start;
-  gap: 0.7rem;
+  gap: 0.75rem;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1rem 1.05rem;
+  padding: 1.15rem 1.1rem;
   box-shadow: var(--shadow);
   color: var(--navy);
-  font-weight: 700;
-  font-size: 0.95rem;
   line-height: 1.45;
 }
 
@@ -640,65 +584,38 @@ html[data-lang="en"] .section .mp-offer .mp-note {
   font-weight: 800;
 }
 
-.mp-platforms {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  max-width: 960px;
-  margin: 0 auto 1.75rem;
+.mp-flow-body {
+  min-width: 0;
 }
 
-.mp-platform {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  text-decoration: none;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.15rem;
-  box-shadow: var(--shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+.mp-flow-body h3 {
+  margin: 0 0 0.35rem;
   color: var(--navy);
-}
-
-.mp-platform:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 44px rgba(11, 42, 91, 0.12);
-  border-color: rgba(215, 38, 46, 0.35);
-  color: var(--navy);
-}
-
-.mp-platform-icon {
-  display: inline-flex;
-  margin-bottom: 0.35rem;
-}
-
-.mp-platform-icon svg {
-  display: block;
-  width: 44px;
-  height: 44px;
-}
-
-.mp-platform-name {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: 0.01em;
-  color: var(--navy);
+  line-height: 1.35;
 }
 
-.mp-platform-ar {
+.mp-flow-body p {
+  margin: 0;
   color: var(--muted);
+  font-size: 0.92rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.mp-platform-cta {
-  margin-top: 0.55rem;
-  align-self: flex-start;
-  font-weight: 800;
-  font-size: 0.9rem;
-  color: var(--red);
+.mp-custom-note {
+  margin: 0 auto 1.75rem;
+  max-width: 40rem;
+  text-align: center;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  padding: 0.85rem 1rem;
+  border-inline-start: 3px solid var(--red);
+  background: rgba(11, 42, 91, 0.04);
+  border-radius: var(--radius);
 }
 
 .mp-actions {
@@ -856,6 +773,71 @@ html[data-lang="en"] .section .mp-offer .mp-note {
 
 .message-form textarea {
   min-height: 7.5rem;
+}
+
+.message-form .field-file input[type="file"] {
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.message-form .field-file input[type="file"]::file-selector-button {
+  margin-inline-end: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--navy);
+  color: var(--white);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.message-form .photo-preview {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: start;
+  margin-top: 0.35rem;
+}
+
+.message-form .photo-preview[hidden] {
+  display: none !important;
+}
+
+.message-form .photo-preview img {
+  display: block;
+  width: min(100%, 11rem);
+  max-height: 9rem;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.message-form .photo-preview-clear {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+}
+
+.message-form .photo-preview-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.message-form .field-hint {
+  margin: 0.15rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .form-actions {
@@ -1253,10 +1235,6 @@ html[data-lang="en"] .section .mp-offer .mp-note {
     grid-template-columns: 1fr;
   }
 
-  .mp-platforms {
-    grid-template-columns: 1fr;
-  }
-
   .footer-top {
     grid-template-columns: 1fr 1fr;
   }
@@ -1350,8 +1328,9 @@ html[data-lang="en"] .section .mp-offer .mp-note {
     grid-template-columns: 1fr;
   }
 
-  .mp-platforms {
-    grid-template-columns: 1fr;
+  .mp-custom-note {
+    text-align: start;
+    font-size: 0.92rem;
   }
 
   .mp-actions {
@@ -1362,6 +1341,10 @@ html[data-lang="en"] .section .mp-offer .mp-note {
   .mp-actions .btn {
     width: 100%;
     min-width: 0;
+  }
+
+  .message-form .field-file input[type="file"] {
+    min-height: 48px;
   }
 
   .hero {

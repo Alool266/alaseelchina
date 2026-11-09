@@ -605,17 +605,20 @@ a:hover {
 }
 
 .mp-custom-note {
-  margin: 0 auto 1.75rem;
-  max-width: 40rem;
+  margin: 0.35rem auto 1.85rem;
+  width: min(100%, 38rem);
+  max-width: 38rem;
   text-align: center;
   color: var(--navy);
   font-weight: 700;
-  font-size: 0.98rem;
-  line-height: 1.55;
-  padding: 0.85rem 1rem;
-  border-inline-start: 3px solid var(--red);
-  background: rgba(11, 42, 91, 0.04);
+  font-size: clamp(0.95rem, 2.4vw, 1.02rem);
+  line-height: 1.7;
+  padding: 1.05rem 1.35rem;
+  background: rgba(11, 42, 91, 0.045);
+  border: 1px solid rgba(11, 42, 91, 0.08);
+  border-block-start: 3px solid var(--red);
   border-radius: var(--radius);
+  box-sizing: border-box;
 }
 
 .mp-actions {
@@ -623,6 +626,7 @@ a:hover {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
+  margin-top: 0.15rem;
 }
 
 .mp-actions .btn {
@@ -1329,8 +1333,11 @@ a:hover {
   }
 
   .mp-custom-note {
-    text-align: start;
-    font-size: 0.92rem;
+    width: 100%;
+    max-width: none;
+    text-align: center;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.5rem;
   }
 
   .mp-actions {

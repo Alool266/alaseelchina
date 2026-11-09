@@ -607,20 +607,22 @@ a:hover {
 }
 
 .mp-custom-note {
-  /* Match .mp-flow width so the note aligns with the 3-card row edges */
-  margin: 0 auto 1.35rem;
+  /* Align with .mp-flow; soft navy accent — no red hairline fighting the CTA */
+  margin: 0 auto 2rem;
   width: min(100%, 960px);
   max-width: 960px;
   text-align: center;
   color: var(--navy);
   font-weight: 700;
   font-size: clamp(0.95rem, 2.4vw, 1.02rem);
-  line-height: 1.7;
-  padding: 1rem 1.5rem;
-  background: rgba(11, 42, 91, 0.045);
-  border: 1px solid rgba(11, 42, 91, 0.08);
-  border-block-start: 3px solid var(--red);
+  line-height: 1.75;
+  padding: 1.2rem 1.6rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(11, 42, 91, 0.035));
+  border: 1px solid rgba(11, 42, 91, 0.1);
+  border-inline-start: 3px solid var(--navy-soft);
   border-radius: var(--radius);
+  box-shadow: 0 8px 22px rgba(11, 42, 91, 0.04);
   box-sizing: border-box;
 }
 
@@ -629,11 +631,17 @@ a:hover {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 0;
+  margin-top: 0.25rem;
+  padding-top: 0.15rem;
 }
 
 .mp-actions .btn {
   min-width: min(100%, 16rem);
+  box-shadow: 0 10px 24px rgba(11, 42, 91, 0.14);
+}
+
+.mp-actions .btn-primary:hover {
+  box-shadow: 0 14px 28px rgba(11, 42, 91, 0.18);
 }
 
 .steps {
@@ -1182,11 +1190,122 @@ a:hover {
   border-top: 1px solid var(--line);
 }
 
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+  align-items: center;
+}
+
+.footer-legal a {
+  color: var(--navy);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-legal a:hover {
+  color: var(--red);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .copy,
 .footer-domain {
   margin: 0;
   color: var(--muted);
   font-size: 0.88rem;
+}
+
+/* —— Legal / Terms page —— */
+.legal-page {
+  padding: clamp(2.5rem, 6vw, 4rem) 0 clamp(3rem, 7vw, 4.5rem);
+}
+
+.legal-shell {
+  width: min(100% - 2rem, 820px);
+  margin-inline: auto;
+}
+
+.legal-hero {
+  margin-bottom: 2rem;
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.legal-hero .eyebrow {
+  margin-bottom: 0.45rem;
+}
+
+.legal-hero h1 {
+  margin: 0 0 0.65rem;
+  color: var(--navy);
+  font-size: clamp(1.65rem, 3.5vw, 2.15rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.legal-updated {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.legal-intro {
+  margin: 0 0 1.75rem;
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  font-weight: 600;
+}
+
+.legal-article {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.legal-article section {
+  padding: 1.15rem 1.25rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 22px rgba(11, 42, 91, 0.04);
+}
+
+.legal-article h2 {
+  margin: 0 0 0.55rem;
+  color: var(--navy);
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.legal-article p,
+.legal-article li {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.75;
+  font-weight: 500;
+}
+
+.legal-article ul {
+  margin: 0.55rem 0 0;
+  padding-inline-start: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.legal-article p + p {
+  margin-top: 0.55rem;
+}
+
+.legal-back {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .wa-float {
@@ -1339,8 +1458,8 @@ a:hover {
     width: 100%;
     max-width: none;
     text-align: center;
-    padding: 0.95rem 1.1rem;
-    margin: 0 auto 1.25rem;
+    padding: 1.1rem 1.15rem;
+    margin: 0 auto 1.75rem;
   }
 
   .mp-actions {

@@ -1309,6 +1309,50 @@ a:hover {
   margin-top: 0.55rem;
 }
 
+.legal-contact {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.85rem 0 1rem;
+  padding: 0.95rem 1.1rem;
+  background: rgba(11, 42, 91, 0.035);
+  border: 1px solid rgba(11, 42, 91, 0.1);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.legal-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 0.85rem;
+  margin: 0;
+}
+
+.legal-contact-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 4.5rem;
+}
+
+.legal-contact-link {
+  color: var(--navy);
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+}
+
+.legal-contact-link:hover {
+  color: var(--red);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.legal-contact-phone {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .legal-back {
   margin-top: 2rem;
   display: flex;

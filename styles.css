@@ -550,18 +550,20 @@ a:hover {
 
 .mp-flow {
   list-style: none;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1.15rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.85rem;
   max-width: 960px;
+  align-items: stretch;
 }
 
 .mp-flow li {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
+  height: 100%;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -605,15 +607,16 @@ a:hover {
 }
 
 .mp-custom-note {
-  margin: 0.35rem auto 1.85rem;
-  width: min(100%, 38rem);
-  max-width: 38rem;
+  /* Match .mp-flow width so the note aligns with the 3-card row edges */
+  margin: 0 auto 1.35rem;
+  width: min(100%, 960px);
+  max-width: 960px;
   text-align: center;
   color: var(--navy);
   font-weight: 700;
   font-size: clamp(0.95rem, 2.4vw, 1.02rem);
   line-height: 1.7;
-  padding: 1.05rem 1.35rem;
+  padding: 1rem 1.5rem;
   background: rgba(11, 42, 91, 0.045);
   border: 1px solid rgba(11, 42, 91, 0.08);
   border-block-start: 3px solid var(--red);
@@ -626,7 +629,7 @@ a:hover {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 0.15rem;
+  margin-top: 0;
 }
 
 .mp-actions .btn {
@@ -1336,8 +1339,8 @@ a:hover {
     width: 100%;
     max-width: none;
     text-align: center;
-    padding: 1rem 1.1rem;
-    margin-bottom: 1.5rem;
+    padding: 0.95rem 1.1rem;
+    margin: 0 auto 1.25rem;
   }
 
   .mp-actions {
